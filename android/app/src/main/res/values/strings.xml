@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">zazen</string>
+    <string name="title_activity_main">zazen</string>
+    <string name="package_name">com.zazen.app</string>
+    <string name="custom_url_scheme">com.zazen.app</string>
+</resources>

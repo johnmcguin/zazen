@@ -1,17 +1,25 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-row class="full-screen-container ion-justify-content-center ion-align-items-center">
+    <ion-col size="4">
+      <ion-row class="ion-justify-content-center timer">
+        <ion-col>
+          <div (click)="selectMeditationTime()" class="ion-text-center">
+            {{ timeRemaining }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="6">
+          <ion-button (click)="play()" fill="clear" class="ion-float-right">
+            <ion-icon size="large" name="play-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button (click)="pause()" fill="clear" class="ion-float-left">
+            <ion-icon size="large" name="pause-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
 </ion-content>
