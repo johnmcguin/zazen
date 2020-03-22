@@ -1,5 +1,12 @@
 export interface ISession {
-    time: number;
+    // in seconds
+    sessionLength: number;
     completed: boolean;
-    completedOn: Date;
+    date: Date;
+}
+
+export interface ISettings {
+    // theme: string;
+    preferredSound?: string;
+    leadInTime?: number;
 }

@@ -1,0 +1,7 @@
+<ion-content [fullscreen]="true">
+  <!-- (observable$ | async) -->
+  <ion-row *ngFor="let session of sessions$ | async; let i = index"
+    class="full-screen-container ion-justify-content-center ion-align-items-center">
+    {{ session.completed}}
+  </ion-row>
+</ion-content>
