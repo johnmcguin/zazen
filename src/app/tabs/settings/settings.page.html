@@ -1,23 +1,17 @@
 <ion-content [fullscreen]="true" class="ion-padding">
-    <!-- Theme -->
-    <ion-list>
-        <ion-list-header lines="full">
-            <ion-label>Theme</ion-label>
-        </ion-list-header>
-        <ion-item>
-            <ion-label>Dark Mode</ion-label>
-            <ion-toggle (ionChange)="darkModeChanged($event)" slot="end"></ion-toggle>
-        </ion-item>
-    </ion-list>
     <!-- Sound -->
     <ion-list>
         <ion-list-header lines="full">
             <ion-label>Sound</ion-label>
         </ion-list-header>
-        <ion-item>
+        <ion-item *ngFor="let sound of sounds; let i = index;">
+            <ion-label>{{ sound.name }}</ion-label>
+            <ion-toggle (ionChange)="playTest()" slot="end"></ion-toggle>
+        </ion-item>
+        <!-- <ion-item>
             <ion-label>Sound Option (have repeater here. about 5 options)</ion-label>
             <ion-toggle slot="end"></ion-toggle>
-        </ion-item>
+        </ion-item> -->
     </ion-list>
     <!-- Habits -->
     <ion-list>
@@ -33,5 +27,5 @@
             <ion-input type="number"></ion-input>
         </ion-item>
     </ion-list>
-    
+
 </ion-content>
