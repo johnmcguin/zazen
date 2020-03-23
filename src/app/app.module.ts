@@ -10,6 +10,7 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SessionsService } from './repos/sessions.service';
+import { SoundService } from './services/sound.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import { SessionsService } from './repos/sessions.service';
     StatusBar,
     SplashScreen,
     NativeAudio,
+    SoundService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
