@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
+import { Observable, BehaviorSubject, interval, empty, from } from 'rxjs';
 import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
 import { SessionsService } from '../../repos/sessions.service';
+import { SettingsService } from 'src/app/repos/settings.service';
+import { SoundService } from 'src/app/services/sound.service';
 
 @Component({
   selector: 'app-timer',
@@ -13,24 +15,28 @@ export class TimerPage implements OnInit {
   playState$: BehaviorSubject<boolean>;
   timer$;
   interval$: Observable<number>;
-  // needs to be configurable
-  // TODO: pick up here
-  // query settings for default time as an observable.
-  // kick off targetTime and currentSeconds with this value
-  private targetTime = .1 * 60;
-  private currentSeconds = .1 * 60; // should be default from settings
+  settings$;
+  settings;
+  private targetTime;
+  private currentSeconds;
 
-  constructor(private sessionRepo: SessionsService) { }
+  constructor(private sessionRepo: SessionsService, private settingsRepo: SettingsService, private soundService: SoundService) { }
 
   ngOnInit() {
-    this.timeRemaining = this.getTimeRemaining(this.currentSeconds);
+    this.settings$ = from(this.settingsRepo.getItems());
+    this.settings$.subscribe(settings => {
+      this.settings = settings;
+      this.currentSeconds = settings.defaultSession ? settings.defaultSession * 60 : 10 * 60;
+      this.timeRemaining = this.getTimeRemaining(this.currentSeconds);
+    });
     this.interval$ = interval(1000).pipe(mapTo(-1));
     this.playState$ = new BehaviorSubject<boolean>(false);
-
+    // TODO: pick up here. I think I need to merge on some observable that would observe this.currentSeconds
     this.timer$ = this.playState$
       .pipe(
         switchMap(val => (val ? this.interval$ : empty())),
         scan((accum, curr: any) => (curr ? curr + accum : accum), this.currentSeconds),
+        // scan((accum, curr: any) => (curr ? curr + accum : accum), this.currentSeconds),
         takeWhile(v => v >= 0),
         finalize(() => {
           this.sessionRepo.addItem({
@@ -47,6 +53,7 @@ export class TimerPage implements OnInit {
 
   play() {
     this.playState$.next(true);
+    this.soundService.play(this.settings.preferredSound);
   }
 
   pause() {
