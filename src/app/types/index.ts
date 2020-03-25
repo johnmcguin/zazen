@@ -1,12 +1,17 @@
 export interface ISession {
-    // in seconds
     sessionLength: number;
     completed: boolean;
     date: Date;
 }
 
 export interface ISettings {
-    // theme: string;
     preferredSound?: string;
-    leadInTime?: number;
+    leadInTime?: number; // seconds
+    defaultSession?: number; // minutes
+}
+
+export interface ISound {
+    name: string;
+    id: string;
+    path: string;
 }
