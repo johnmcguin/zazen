@@ -12,43 +12,46 @@ enum AudioTypes  {
 })
 export class SoundService {
   audioType: string;
-  sounds: any = [];
+  sounds = new Map();
+  BASE_DIR = '../../assets/sounds';
 
   constructor(public nativeAudio: NativeAudio, platform: Platform) {
     this.audioType = platform.is('cordova') ? AudioTypes.NATIVE : AudioTypes.HTML_5;
   }
 
   preload(key, asset) {
+    const assetPath = `${this.BASE_DIR}/${asset}`;
     if (this.audioType === AudioTypes.HTML_5) {
-      const audio = {
-        key,
-        asset
-      };
-      this.sounds.push(audio);
+      this.sounds.set(key, new Audio(assetPath));
     } else {
-
-      this.nativeAudio.preloadSimple(key, asset);
-      const audio = {
-        key,
-        asset: key
-      };
-      this.sounds.push(audio);
+      this.nativeAudio.preloadSimple(key, assetPath);
     }
   }
 
   play(key) {
-
-    const audio = this.sounds.find((sound) => {
-      return sound.key === key;
-    });
-
     if (this.audioType === AudioTypes.HTML_5) {
-
-      const audioAsset = new Audio(audio.asset);
-      audioAsset.play();
-
+      const audio = this.sounds.get(key);
+      audio.play();
     } else {
-      this.nativeAudio.play(audio.asset);
+      this.nativeAudio.play(key);
     }
   }
+
+  stop(key) {
+    if (this.audioType === AudioTypes.HTML_5) {
+      const audio = this.sounds.get(key);
+      audio.pause();
+      audio.currentTime = 0;
+    } else {
+      this.nativeAudio.stop(key);
+    }
+  }
+
+  // html5 api for stop / reset
+  // call .pause()
+  // assign audio.currentTime = 0
+
+  // this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3').then(onSuccess, onError);
+  // this.nativeAudio.play('uniqueId1').then(onSuccess, onError);
+  // this.nativeAudio.stop('uniqueId1').then(onSuccess, onError);
 }
