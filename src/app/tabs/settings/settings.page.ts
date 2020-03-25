@@ -1,13 +1,10 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { SoundService } from '../../services/sound.service';
-
-interface ISound {
-  name: string;
-  id: string;
-  path: string;
-  checked: boolean;
-}
+import { SettingsService } from 'src/app/repos/settings.service';
+import { from } from 'rxjs';
+import { ISound } from 'src/app/types';
 
 @Component({
   selector: 'app-settings',
@@ -16,50 +13,78 @@ interface ISound {
 })
 export class SettingsPage implements OnInit {
   sounds: ISound[];
-  constructor(private soundService: SoundService, private cdr: ChangeDetectorRef) { }
+  settings$;
+  settings;
+  formState: FormGroup;
+  formChanges$;
+  constructor(private soundService: SoundService, private settingsRepo: SettingsService, private fb: FormBuilder) { }
 
 
   async ngOnInit() {
-    // determine if there is a setting saved for this. checked should be set by default based on saved config
+    this.settings$ = from(this.settingsRepo.getItems())
+      .subscribe(settings => {
+        this.settings = settings;
+        const defaultSound = this.sounds.find(sound => sound.id === this.settings.preferredSound);
+        this.formState = this.fb.group({
+          preferredSound: defaultSound ? defaultSound.id : '',
+          leadInTime: this.settings.leadInTime || 0,
+          defaultSession: this.settings.defaultSession || 0
+        });
+        this.formChanges$ = this.formState.valueChanges;
+        this.formChanges$.subscribe(value => {
+          this.update(value);
+        });
+      });
+
     this.sounds = [
       {
         name: 'Tibetan Bowl - Soft Mallet',
         id: 'sound1',
-        path: 'tibetan_bowl_soft_mallet.mp3',
-        checked: false
+        path: 'tibetan_bowl_soft_mallet.mp3'
       },
       {
         name: 'Singing Bowl - Crystal Wand',
         id: 'sound2',
-        path: 'crystal_wand_on_singing_bowl.mp3',
-        checked: false
+        path: 'crystal_wand_on_singing_bowl.mp3'
       },
       {
         name: 'Singing Bowl - Wine Cork Mallet',
         id: 'sound3',
-        path: 'wine_cork_mallet_dinging_on_singing_bowl_long_hold.mp3',
-        checked: false
+        path: 'wine_cork_mallet_dinging_on_singing_bowl_long_hold.mp3'
       },
       {
         name: 'Prayer Bowl',
         id: 'sound4',
-        path: 'Prayer_Bowl_4.mp3',
-        checked: false
+        path: 'Prayer_Bowl_4.mp3'
       },
       {
         name: 'Prayer Bowl 2',
         id: 'sound5',
-        path: 'Prayer_Bowl_5.mp3',
-        checked: false
+        path: 'Prayer_Bowl_5.mp3'
       },
     ];
-
-    this.sounds.forEach(sound => this.soundService.preload(sound.id, sound.path));
   }
 
-  soundSelected($event) {
+  playSound($event) {
     const { detail } = $event;
-    const sound = detail.value;
-    this.soundService.play(sound.id);
+    const soundId = detail.value;
+    this.soundService.play(soundId);
+  }
+
+  async update(payload) {
+    const updates = Object.assign({}, this.only(this.settings), payload);
+    await this.settingsRepo.updateItem(updates);
+  }
+
+  only(settings) {
+    const keys = ['preferredSound', 'leadInTime', 'defaultSession'];
+    return Object.entries(settings).reduce((accum, [key, val]) => {
+      if (keys.includes(key)) {
+        accum[key] = val;
+        return accum;
+      }
+      delete accum[key];
+      return accum;
+    }, settings);
   }
 }

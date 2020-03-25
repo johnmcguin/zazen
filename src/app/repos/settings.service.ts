@@ -29,4 +29,9 @@ export class SettingsService implements IDataRepo<ISettings> {
     const newSettings = Object.assign({}, settings, payload);
     return this.addItem(newSettings);
   }
+
+  async getItems() {
+    const { value } = await Storage.get({ key: this.collection });
+    return JSON.parse(value);
+  }
 }

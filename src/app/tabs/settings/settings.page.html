@@ -1,29 +1,33 @@
 <ion-content [fullscreen]="true" class="ion-padding">
     <!-- Sound -->
-    <ion-list>
-        <ion-radio-group (ionChange)="soundSelected($event)">
+    <form *ngIf="formState" [formGroup]="formState">
+        <ion-list>
+            <ion-radio-group (ionChange)="playSound($event)" formControlName="preferredSound">
+                <ion-list-header lines="full">
+                    <ion-label>Sound</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let sound of sounds; let i = index">
+                    <ion-label>{{ sound.name }}</ion-label>
+                    <ion-radio [value]="sound.id" name="soundOptions"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+        </ion-list>
+        <!-- Habits -->
+        <ion-list>
             <ion-list-header lines="full">
-                <ion-label>Sound</ion-label>
+                <ion-label>Habits</ion-label>
             </ion-list-header>
-            <ion-item *ngFor="let sound of sounds; let i = index">
-                <ion-label>{{ sound.name }}</ion-label>
-                <ion-radio name="soundOptions" [value]="sound"></ion-radio>
+            <ion-item>
+                <ion-label>Sit Time(minutes)</ion-label>
+                <ion-input debounce="300" inputmode="numeric" min="0" max="120" formControlName="defaultSession"
+                    type="number"></ion-input>
             </ion-item>
-        </ion-radio-group>
-    </ion-list>
-    <!-- Habits -->
-    <ion-list>
-        <ion-list-header lines="full">
-            <ion-label>Habits</ion-label>
-        </ion-list-header>
-        <ion-item>
-            <ion-label>Default Timer (minutes)</ion-label>
-            <ion-input type="number"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label>Setup Time (seconds)</ion-label>
-            <ion-input type="number"></ion-input>
-        </ion-item>
-    </ion-list>
+            <ion-item>
+                <ion-label>Lead In Time(seconds)</ion-label>
+                <ion-input debounce="300" inputmode="numeric" min="0" max="120" formControlName="leadInTime"
+                    type="number"></ion-input>
+            </ion-item>
+        </ion-list>
+    </form>
 
 </ion-content>
