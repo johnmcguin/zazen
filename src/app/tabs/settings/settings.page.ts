@@ -1,5 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+
 import { SoundService } from '../../services/sound.service';
+
+interface ISound {
+  name: string;
+  id: string;
+  path: string;
+  checked: boolean;
+}
 
 @Component({
   selector: 'app-settings',
@@ -7,38 +15,51 @@ import { SoundService } from '../../services/sound.service';
   styleUrls: ['settings.page.scss']
 })
 export class SettingsPage implements OnInit {
-  sounds;
-  constructor(private soundService: SoundService) { }
+  sounds: ISound[];
+  constructor(private soundService: SoundService, private cdr: ChangeDetectorRef) { }
+
 
   async ngOnInit() {
+    // determine if there is a setting saved for this. checked should be set by default based on saved config
     this.sounds = [
       {
-        name: 'Crystal Wand on Singing Bowl',
+        name: 'Tibetan Bowl - Soft Mallet',
         id: 'sound1',
-        path: '../../assets/sounds/crystal_wand_on_singing_bowl.mp3'
-      }
+        path: 'tibetan_bowl_soft_mallet.mp3',
+        checked: false
+      },
+      {
+        name: 'Singing Bowl - Crystal Wand',
+        id: 'sound2',
+        path: 'crystal_wand_on_singing_bowl.mp3',
+        checked: false
+      },
+      {
+        name: 'Singing Bowl - Wine Cork Mallet',
+        id: 'sound3',
+        path: 'wine_cork_mallet_dinging_on_singing_bowl_long_hold.mp3',
+        checked: false
+      },
+      {
+        name: 'Prayer Bowl',
+        id: 'sound4',
+        path: 'Prayer_Bowl_4.mp3',
+        checked: false
+      },
+      {
+        name: 'Prayer Bowl 2',
+        id: 'sound5',
+        path: 'Prayer_Bowl_5.mp3',
+        checked: false
+      },
     ];
+
+    this.sounds.forEach(sound => this.soundService.preload(sound.id, sound.path));
   }
 
-  playTest() {
-    const testSound = this.sounds[0];
-    this.soundService.preload(testSound.id, testSound.path);
-    this.soundService.play(testSound.id);
+  soundSelected($event) {
+    const { detail } = $event;
+    const sound = detail.value;
+    this.soundService.play(sound.id);
   }
-
-  //   this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3').then(onSuccess, onError);
-  // this.nativeAudio.preloadComplex('uniqueId2', 'path/to/file2.mp3', 1, 1, 0).then(onSuccess, onError);
-
-  // this.nativeAudio.play('uniqueId1').then(onSuccess, onError);
-
-  // // can optionally pass a callback to be called when the file is done playing
-  // this.nativeAudio.play('uniqueId1', () => console.log('uniqueId1 is done playing'));
-
-  // this.nativeAudio.loop('uniqueId2').then(onSuccess, onError);
-
-  // this.nativeAudio.setVolumeForComplexAsset('uniqueId2', 0.6).then(onSuccess, onError);
-
-  // this.nativeAudio.stop('uniqueId1').then(onSuccess, onError);
-
-  // this.nativeAudio.unload('uniqueId1').then(onSuccess, onError);
 }
