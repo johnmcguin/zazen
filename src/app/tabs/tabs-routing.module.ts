@@ -17,16 +17,16 @@ const routes: Routes = [
           }
         ]
       },
-      {
-        path: 'analytics',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./analytics/analytics.module').then(m => m.AnalyticsPageModule)
-          }
-        ]
-      },
+      // {
+      //   path: 'analytics',
+      //   children: [
+      //     {
+      //       path: '',
+      //       loadChildren: () =>
+      //         import('./analytics/analytics.module').then(m => m.AnalyticsPageModule)
+      //     }
+      //   ]
+      // },
       {
         path: 'settings',
         children: [
