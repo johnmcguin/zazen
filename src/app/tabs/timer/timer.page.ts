@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Observable, BehaviorSubject, interval, empty, from, combineLatest, of } from 'rxjs';
-import { mapTo, takeWhile, switchMap, scan, finalize, withLatestFrom, map, mergeMap, startWith } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
+import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
 import { SessionsService } from '../../repos/sessions.service';
 import { SettingsService } from 'src/app/repos/settings.service';
 import { SoundService } from 'src/app/services/sound.service';

@@ -6,16 +6,18 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
 describe('AppComponent', () => {
 
-  let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+  let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy, nativeAudioSpy;
 
   beforeEach(async(() => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve();
-    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy, is(){}});
+    nativeAudioSpy = jasmine.createSpyObj('NativeAudio', ['preloadSimple', 'play', 'stop']);
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -24,6 +26,7 @@ describe('AppComponent', () => {
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+        { provide: NativeAudio, useValue: nativeAudioSpy },
       ],
     }).compileComponents();
   }));

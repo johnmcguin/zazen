@@ -46,12 +46,4 @@ export class SoundService {
       this.nativeAudio.stop(key);
     }
   }
-
-  // html5 api for stop / reset
-  // call .pause()
-  // assign audio.currentTime = 0
-
-  // this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3').then(onSuccess, onError);
-  // this.nativeAudio.play('uniqueId1').then(onSuccess, onError);
-  // this.nativeAudio.stop('uniqueId1').then(onSuccess, onError);
 }
