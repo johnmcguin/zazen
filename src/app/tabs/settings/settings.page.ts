@@ -23,12 +23,13 @@ export class SettingsPage implements OnInit {
   async ngOnInit() {
     this.settings$ = from(this.settingsRepo.getItems())
       .subscribe(settings => {
-        this.settings = settings;
-        const defaultSound = this.sounds.find(sound => sound.id === this.settings.preferredSound);
+        this.settings = settings || {};
+        const targetSound = this.settings && this.settings.preferredSound ? this.settings.preferredSound : 'sound1';
+        const defaultSound = this.sounds.find(sound => sound.id === targetSound);
         this.formState = this.fb.group({
           preferredSound: defaultSound ? defaultSound.id : '',
-          leadInTime: this.settings.leadInTime || 0,
-          defaultSession: this.settings.defaultSession || 0
+          leadInTime: this.settings && this.settings.leadInTime ? this.settings.leadInTime : 0,
+          defaultSession: this.settings && this.settings.leadInTime ? this.settings.defaultSession : 0
         });
         this.formChanges$ = this.formState.valueChanges;
         this.formChanges$.subscribe(value => {

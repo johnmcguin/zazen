@@ -13,18 +13,16 @@ enum AudioTypes  {
 export class SoundService {
   audioType: string;
   sounds = new Map();
-  BASE_DIR = '../../assets/sounds';
 
   constructor(public nativeAudio: NativeAudio, platform: Platform) {
     this.audioType = platform.is('cordova') ? AudioTypes.NATIVE : AudioTypes.HTML_5;
   }
 
   preload(key, asset) {
-    const assetPath = `${this.BASE_DIR}/${asset}`;
     if (this.audioType === AudioTypes.HTML_5) {
-      this.sounds.set(key, new Audio(assetPath));
+      this.sounds.set(key, new Audio(asset));
     } else {
-      this.nativeAudio.preloadSimple(key, assetPath);
+      this.nativeAudio.preloadSimple(key, asset);
     }
   }
 

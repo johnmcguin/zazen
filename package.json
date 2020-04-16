@@ -1,8 +1,8 @@
 {
   "name": "zazen",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "John McGuin",
+  "description": "An Simple Meditation Timer",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -56,6 +56,5 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.4.3"
-  },
-  "description": "An Ionic project"
+  }
 }

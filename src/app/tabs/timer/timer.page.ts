@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Plugins } from '@capacitor/core';
 import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
 import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
 import { SessionsService } from '../../repos/sessions.service';
 import { SettingsService } from 'src/app/repos/settings.service';
 import { SoundService } from 'src/app/services/sound.service';
+
+const { Modals } = Plugins;
 
 @Component({
   selector: 'app-timer',
@@ -17,6 +20,7 @@ export class TimerPage implements OnInit {
   interval$: Observable<number>;
   settings$;
   settings;
+
   private targetTime;
   private currentSeconds;
 
@@ -27,7 +31,7 @@ export class TimerPage implements OnInit {
 
   async ngOnInit() {
     this.settings = await this.settingsRepo.getItems();
-    this.currentSeconds = this.settings.defaultSession ? this.settings.defaultSession * 60 : 10 * 60;
+    this.currentSeconds = this.settings && this.settings.defaultSession ? this.settings.defaultSession * 60 : 10 * 60;
     this.timeRemaining = this.getTimeRemaining(this.currentSeconds);
 
     this.timer$ = this.playState$
@@ -50,7 +54,8 @@ export class TimerPage implements OnInit {
 
   play() {
     this.playState$.next(true);
-    this.soundService.play(this.settings.preferredSound);
+    const soundId = this.settings && this.settings.preferredSound ? this.settings.preferredSound : 'sound1';
+    this.soundService.play(soundId);
   }
 
   pause() {
