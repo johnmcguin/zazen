@@ -28,7 +28,7 @@ export class SettingsPage implements OnInit {
         const defaultSound = this.sounds.find(sound => sound.id === targetSound);
         this.formState = this.fb.group({
           preferredSound: defaultSound ? defaultSound.id : '',
-          leadInTime: this.settings && this.settings.leadInTime ? this.settings.leadInTime : 0,
+          // leadInTime: this.settings && this.settings.leadInTime ? this.settings.leadInTime : 0,
           defaultSession: this.settings && this.settings.leadInTime ? this.settings.defaultSession : 0
         });
         this.formChanges$ = this.formState.valueChanges;
