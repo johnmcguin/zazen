@@ -24,7 +24,7 @@ export class AppComponent {
 
   initializeApp() {
 
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
@@ -55,8 +55,9 @@ export class AppComponent {
           path: 'assets/sounds/Prayer_Bowl_5.mp3'
         },
       ];
-
-      this.sounds.forEach(sound => this.soundService.preload(sound.id, sound.path));
+      const preloads = this.sounds.map(s => this.soundService.preload(s.id, s.path));
+      await Promise.all([preloads]);
+      // this.sounds.forEach(sound => this.soundService.preload(sound.id, sound.path));
     });
 
   }
