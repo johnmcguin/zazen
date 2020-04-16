@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { Plugins } from '@capacitor/core';
 import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
 import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
 import { SessionsService } from '../../repos/sessions.service';
 import { SettingsService } from 'src/app/repos/settings.service';
 import { SoundService } from 'src/app/services/sound.service';
 
-const { Modals } = Plugins;
 
 @Component({
   selector: 'app-timer',
