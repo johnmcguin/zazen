@@ -29,11 +29,11 @@ export class AppComponent {
       this.splashScreen.hide();
 
       this.sounds = [
-        {
-          name: 'Tibetan Bowl - Soft Mallet',
-          id: 'sound1',
-          path: 'assets/sounds/tibetan_bowl_soft_mallet.mp3'
-        },
+        // {
+        //   name: 'Tibetan Bowl - Soft Mallet',
+        //   id: 'sound1',
+        //   path: 'assets/sounds/tibetan_bowl_soft_mallet.mp3'
+        // },
         {
           name: 'Singing Bowl - Crystal Wand',
           id: 'sound2',
@@ -57,7 +57,6 @@ export class AppComponent {
       ];
       const preloads = this.sounds.map(s => this.soundService.preload(s.id, s.path));
       await Promise.all([preloads]);
-      // this.sounds.forEach(sound => this.soundService.preload(sound.id, sound.path));
     });
 
   }

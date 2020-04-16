@@ -18,6 +18,7 @@ export class TimerPage {
   playState$: BehaviorSubject<boolean>;
   timer$;
   interval$: Observable<number>;
+  isAlive: boolean;
   settings$;
   settings;
 
@@ -30,6 +31,7 @@ export class TimerPage {
   }
 
   async ionViewWillEnter() {
+    this.isAlive = true;
     this.settings = await this.settingsRepo.getItems();
     this.currentSeconds = this.settings && this.settings.defaultSession ? this.settings.defaultSession * 60 : 10 * 60;
     this.timeRemaining = this.getTimeRemaining(this.currentSeconds);
@@ -38,7 +40,7 @@ export class TimerPage {
       .pipe(
         switchMap(val => (val ? this.interval$ : empty())),
         scan((accum, curr: any) => (curr ? curr + accum : accum), this.currentSeconds),
-        takeWhile(v => v >= 0),
+        takeWhile(v => v >= 0 || this.isAlive === true),
         finalize(() => {
           this.sessionRepo.addItem({
             sessionLength: this.targetTime,
@@ -52,9 +54,13 @@ export class TimerPage {
       });
   }
 
+  ionViewDidLeave() {
+    this.isAlive = false;
+  }
+
   play() {
     this.playState$.next(true);
-    const soundId = this.settings && this.settings.preferredSound ? this.settings.preferredSound : 'sound1';
+    const soundId = this.settings && this.settings.preferredSound ? this.settings.preferredSound : 'sound2';
     this.soundService.play(soundId);
   }
 

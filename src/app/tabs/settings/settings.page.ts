@@ -38,11 +38,11 @@ export class SettingsPage {
       });
 
     this.sounds = [
-      {
-        name: 'Tibetan Bowl - Soft Mallet',
-        id: 'sound1',
-        path: 'tibetan_bowl_soft_mallet.mp3'
-      },
+      // {
+      //   name: 'Tibetan Bowl - Soft Mallet',
+      //   id: 'sound1',
+      //   path: 'tibetan_bowl_soft_mallet.mp3'
+      // },
       {
         name: 'Singing Bowl - Crystal Wand',
         id: 'sound2',
