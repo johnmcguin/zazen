@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
 import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
@@ -13,7 +13,7 @@ const { Modals } = Plugins;
   templateUrl: 'timer.page.html',
   styleUrls: ['timer.page.scss']
 })
-export class TimerPage implements OnInit {
+export class TimerPage {
   timeRemaining: string;
   playState$: BehaviorSubject<boolean>;
   timer$;
@@ -29,7 +29,7 @@ export class TimerPage implements OnInit {
     this.playState$ = new BehaviorSubject<boolean>(false);
   }
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     this.settings = await this.settingsRepo.getItems();
     this.currentSeconds = this.settings && this.settings.defaultSession ? this.settings.defaultSession * 60 : 10 * 60;
     this.timeRemaining = this.getTimeRemaining(this.currentSeconds);

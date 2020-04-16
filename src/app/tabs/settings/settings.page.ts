@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { SoundService } from '../../services/sound.service';
@@ -11,7 +11,7 @@ import { ISound } from 'src/app/types';
   templateUrl: 'settings.page.html',
   styleUrls: ['settings.page.scss']
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage {
   sounds: ISound[];
   settings$;
   settings;
@@ -20,7 +20,7 @@ export class SettingsPage implements OnInit {
   constructor(private soundService: SoundService, private settingsRepo: SettingsService, private fb: FormBuilder) { }
 
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     this.settings$ = from(this.settingsRepo.getItems())
       .subscribe(settings => {
         this.settings = settings || {};
@@ -29,7 +29,7 @@ export class SettingsPage implements OnInit {
         this.formState = this.fb.group({
           preferredSound: defaultSound ? defaultSound.id : '',
           // leadInTime: this.settings && this.settings.leadInTime ? this.settings.leadInTime : 0,
-          defaultSession: this.settings && this.settings.leadInTime ? this.settings.defaultSession : 0
+          defaultSession: this.settings && this.settings.defaultSession ? this.settings.defaultSession : 0
         });
         this.formChanges$ = this.formState.valueChanges;
         this.formChanges$.subscribe(value => {
