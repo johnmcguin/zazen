@@ -55,8 +55,12 @@ export class AppComponent {
           path: 'assets/sounds/Prayer_Bowl_5.mp3'
         },
       ];
-      const preloads = this.sounds.map(s => this.soundService.preload(s.id, s.path));
-      await Promise.all([preloads]);
+      try {
+        const preloads = this.sounds.map(s => this.soundService.preload(s.id, s.path));
+        await Promise.all([preloads]);
+      } catch (e) {
+        console.error('an error occurred preloading the sounds: ', e);
+      }
     });
 
   }
