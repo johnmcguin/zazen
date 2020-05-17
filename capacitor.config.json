@@ -1,6 +1,6 @@
 {
-  "appId": "com.zazen.app",
-  "appName": "zazen",
+  "appId": "com.boddhi.app",
+  "appName": "boddhi",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

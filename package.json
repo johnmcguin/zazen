@@ -1,8 +1,8 @@
 {
-  "name": "zazen",
+  "name": "boddhi",
   "version": "0.0.1",
   "author": "John McGuin",
-  "description": "An Simple Meditation Timer",
+  "description": "A Meditation Timer",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
