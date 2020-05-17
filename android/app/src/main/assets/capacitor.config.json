@@ -1,8 +1,0 @@
-{
-  "appId": "com.zazen.app",
-  "appName": "zazen",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www",
-  "cordova": {}
-}
