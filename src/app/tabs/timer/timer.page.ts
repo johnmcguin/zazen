@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { Observable, BehaviorSubject, interval, empty } from 'rxjs';
-import { mapTo, takeWhile, switchMap, scan, finalize } from 'rxjs/operators';
+import { Observable, BehaviorSubject, interval, empty, Subject } from 'rxjs';
+import { mapTo, takeWhile, switchMap, scan, finalize, map } from 'rxjs/operators';
 import { SessionsService } from '../../repos/sessions.service';
 import { SettingsService } from 'src/app/repos/settings.service';
 import { SoundService } from 'src/app/services/sound.service';
+import { TimerViewState, TimerService } from 'src/app/services/timer.service';
+import { PlayState } from 'src/app/types';
 
 
 @Component({
@@ -12,62 +14,42 @@ import { SoundService } from 'src/app/services/sound.service';
   styleUrls: ['timer.page.scss']
 })
 export class TimerPage {
-  timeRemaining: string;
-  playState$: BehaviorSubject<boolean>;
-  timer$;
-  interval$: Observable<number>;
-  isAlive: boolean;
-  settings$;
-  settings;
 
-  private targetTime;
-  private currentSeconds;
+  constructor(private timerSvc: TimerService) { }
 
-  constructor(private sessionRepo: SessionsService, private settingsRepo: SettingsService, private soundService: SoundService) {
-    this.interval$ = interval(1000).pipe(mapTo(-1));
-    this.playState$ = new BehaviorSubject<boolean>(false);
+  vm$: Observable<TimerViewState> = this.timerSvc.store$
+    .pipe(
+      map(state => {
+        const countdown = state.sessionTime - state.tickCount;
+        state.timeRemaining = this.getTimeRemaining(countdown);
+        return state;
+      })
+    );
+  destroy$ = new Subject();
+
+  ionViewWillEnter() { }
+
+  playPressed(viewModelState) {
+    if (viewModelState.state === PlayState.Pristine) {
+      this.timerSvc.play();
+    } else if (viewModelState.state === PlayState.Paused) {
+      this.timerSvc.resume();
+    } else {
+      console.log('noop');
+      console.log('playPressed called while viewModelState is: ', viewModelState);
+    }
   }
 
-  async ionViewWillEnter() {
-    this.isAlive = true;
-    this.settings = await this.settingsRepo.getItems();
-    this.currentSeconds = this.settings && this.settings.defaultSession ? this.settings.defaultSession * 60 : 10 * 60;
-    this.timeRemaining = this.getTimeRemaining(this.currentSeconds);
-
-    this.timer$ = this.playState$
-      .pipe(
-        switchMap(val => (val ? this.interval$ : empty())),
-        scan((accum, curr: any) => (curr ? curr + accum : accum), this.currentSeconds),
-        takeWhile(v => v >= 0 || this.isAlive === true),
-        finalize(() => {
-          this.sessionRepo.addItem({
-            sessionLength: this.targetTime,
-            completed: this.currentSeconds === 0 ? true : false,
-            date: new Date()
-          });
-        })
-      )
-      .subscribe(countdownSeconds => {
-        this.timeRemaining = this.getTimeRemaining(countdownSeconds);
-      });
+  pausePressed(viewModelState) {
+    this.timerSvc.pause();
   }
 
   ionViewDidLeave() {
-    this.isAlive = false;
-  }
-
-  play() {
-    this.playState$.next(true);
-    const soundId = this.settings && this.settings.preferredSound ? this.settings.preferredSound : 'sound2';
-    this.soundService.play(soundId);
-  }
-
-  pause() {
-    this.playState$.next(false);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getTimeRemaining(countdownSeconds: number): string {
-    this.currentSeconds = countdownSeconds;
     const mins = Math.floor(countdownSeconds / 60);
     const secs = countdownSeconds - mins * 60;
     return `${('0' + mins.toString()).slice(-2)}:${('0' + secs.toString()).slice(-2)}`;
