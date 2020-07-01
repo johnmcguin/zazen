@@ -1,35 +1,61 @@
-<ion-content [fullscreen]="true" *ngIf="vm$ | async as vm>
-  <ion-row class="full-screen-container ion-justify-content-center ion-align-items-center">
-    <ion-col size="12">
-      <ion-row class="ion-justify-content-center timer">
-        <ion-col>
-          <div class="ion-text-center">
-            {{ vm.timeRemaining }}
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="ion-justify-content-center">
-        <!-- <ion-col size="6">
-          <ion-button [disabled]="(playState$ | async)" (click)="play()" fill="clear" class="ion-float-right">
+<ion-content [fullscreen]="true" *ngIf="vm$ | async as vm; else novm">
+  <div [ngSwitch]="vm.state">
+
+    <ion-row *ngSwitchCase="'pristine'" class="full-screen-container ion-justify-content-center ion-align-items-center">
+      <ion-col size="12">
+        <ion-row class="ion-justify-content-center timer">
+          <ion-col>
+            <div class="ion-text-center">
+              {{ vm.timeRemaining }}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-button (click)="play()" fill="clear" class="ion-float-right">
             <ion-icon size="large" name="play-outline"></ion-icon>
           </ion-button>
-        </ion-col>
-        <ion-col size="6">
-          <ion-button [disabled]="!(playState$ | async)" (click)="pause()" fill="clear" class="ion-float-left">
+        </ion-row>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row *ngSwitchCase="'playing'" class="full-screen-container ion-justify-content-center ion-align-items-center">
+      <ion-col size="12">
+        <ion-row class="ion-justify-content-center timer">
+          <ion-col>
+            <div class="ion-text-center">
+              {{ vm.timeRemaining }}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-button (click)="pause()" fill="clear" class="ion-float-left">
             <ion-icon size="large" name="pause-outline"></ion-icon>
           </ion-button>
-        </ion-col> -->
-        <ion-col size="6">
-          <ion-button (click)="playPressed(vm)" fill="clear" class="ion-float-right">
+        </ion-row>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row *ngSwitchCase="'paused'" class="full-screen-container ion-justify-content-center ion-align-items-center">
+      <ion-col size="12">
+        <ion-row class="ion-justify-content-center timer">
+          <ion-col>
+            <div class="ion-text-center">
+              {{ vm.timeRemaining }}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-button (click)="resume()" fill="clear" class="ion-float-right">
             <ion-icon size="large" name="play-outline"></ion-icon>
           </ion-button>
-        </ion-col>
-        <ion-col size="6">
-          <ion-button (click)="pausePressed(vm)" fill="clear" class="ion-float-left">
-            <ion-icon size="large" name="pause-outline"></ion-icon>
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-col>
-  </ion-row>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </div>
+
 </ion-content>
+<ng-template #novm>
+  <p>no vm</p>
+</ng-template>

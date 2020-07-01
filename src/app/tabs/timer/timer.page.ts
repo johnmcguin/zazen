@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable, BehaviorSubject, interval, empty, Subject } from 'rxjs';
-import { mapTo, takeWhile, switchMap, scan, finalize, map } from 'rxjs/operators';
-import { SessionsService } from '../../repos/sessions.service';
-import { SettingsService } from 'src/app/repos/settings.service';
-import { SoundService } from 'src/app/services/sound.service';
-import { TimerViewState, TimerService } from 'src/app/services/timer.service';
-import { PlayState } from 'src/app/types';
+import { Observable, Subject } from 'rxjs';
+import { TimerService } from 'src/app/services/timer.service';
 
 
 @Component({
@@ -15,43 +10,31 @@ import { PlayState } from 'src/app/types';
 })
 export class TimerPage {
 
-  constructor(private timerSvc: TimerService) { }
-
-  vm$: Observable<TimerViewState> = this.timerSvc.store$
-    .pipe(
-      map(state => {
-        const countdown = state.sessionTime - state.tickCount;
-        state.timeRemaining = this.getTimeRemaining(countdown);
-        return state;
-      })
-    );
+  vm$: Observable<any>;
   destroy$ = new Subject();
 
-  ionViewWillEnter() { }
-
-  playPressed(viewModelState) {
-    if (viewModelState.state === PlayState.Pristine) {
-      this.timerSvc.play();
-    } else if (viewModelState.state === PlayState.Paused) {
-      this.timerSvc.resume();
-    } else {
-      console.log('noop');
-      console.log('playPressed called while viewModelState is: ', viewModelState);
-    }
+  constructor(private timerSvc: TimerService) {
+    this.vm$ = this.timerSvc.store$;
   }
 
-  pausePressed(viewModelState) {
-    this.timerSvc.pause();
+  ionViewWillEnter() {
+    this.timerSvc.api().init();
+  }
+
+  play() {
+    this.timerSvc.api().play();
+  }
+
+  pause() {
+    this.timerSvc.api().pause();
+  }
+
+  resume() {
+    this.timerSvc.api().resume();
   }
 
   ionViewDidLeave() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  getTimeRemaining(countdownSeconds: number): string {
-    const mins = Math.floor(countdownSeconds / 60);
-    const secs = countdownSeconds - mins * 60;
-    return `${('0' + mins.toString()).slice(-2)}:${('0' + secs.toString()).slice(-2)}`;
   }
 }
