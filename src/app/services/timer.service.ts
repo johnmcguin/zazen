@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, interval, isObservable, EMPTY, BehaviorSubject, of } from 'rxjs';
+import { from, interval, isObservable, EMPTY, BehaviorSubject } from 'rxjs';
 
 import { SettingsService } from '../repos/settings.service';
 import { TimerState, PlayState } from '../types';
-import { scan, map, takeWhile, tap, withLatestFrom, finalize, startWith, mergeMap, share, mapTo, switchMap } from 'rxjs/operators';
+import { scan, map, takeWhile, withLatestFrom, startWith, mergeMap, share, mapTo, switchMap } from 'rxjs/operators';
 import { SoundService } from './sound.service';
 
 export type TimerViewState = TimerState & {
@@ -123,7 +123,7 @@ export class TimerService {
                     map((settingsData) => ({ type: 'INIT_COMPLETE', payload: settingsData }))
                 );
             }),
-            play: this.actionCreator(() => ({ type: 'PLAY', payload: this.timer.call(this) })),
+            play: this.actionCreator(() => ({ type: 'PLAY', payload: this.timer() })),
             pause: this.actionCreator(() => ({ type: 'PAUSE' })),
             resume: this.actionCreator(() => ({ type: 'RESUME' })),
             end: this.actionCreator(() => ({ type: 'END', payload: this.api().init() }))
@@ -141,13 +141,9 @@ export class TimerService {
             this.api().end();
         }.bind(this);
 
-        timer$.subscribe({
-            complete: onComplete
-        });
+        timer$.subscribe({ complete: onComplete });
 
-        return this.playing$.pipe(
-            switchMap(playing => playing ? timer$ : EMPTY),
-        );
+        return this.playing$.pipe(switchMap(playing => playing ? timer$ : EMPTY));
     }
 
     private actionCreator(fn) {

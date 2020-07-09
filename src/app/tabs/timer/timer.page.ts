@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, fromEvent } from 'rxjs';
 import { TimerService } from 'src/app/services/timer.service';
+import NoSleep from 'nosleep.js';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -12,6 +14,7 @@ export class TimerPage {
 
   vm$: Observable<any>;
   destroy$ = new Subject();
+  noSleep = new NoSleep();
 
   constructor(private timerSvc: TimerService) {
     this.vm$ = this.timerSvc.store$;
@@ -19,6 +22,13 @@ export class TimerPage {
 
   ionViewWillEnter() {
     this.timerSvc.api().init();
+  }
+
+  ionViewDidEnter() {
+    const play = document.getElementById('playBtn');
+    fromEvent(play, 'click').pipe(take(1)).subscribe(() => {
+      this.noSleep.enable();
+    });
   }
 
   play() {
@@ -36,5 +46,6 @@ export class TimerPage {
   ionViewDidLeave() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.noSleep.disable();
   }
 }
