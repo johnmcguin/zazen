@@ -26,7 +26,8 @@ export class TimerPage {
 
   ionViewDidEnter() {
     const play = document.getElementById('playBtn');
-    fromEvent(play, 'click').pipe(take(1)).subscribe(() => {
+    play.addEventListener('click', () => {
+      console.log('clicked');
       this.noSleep.enable();
     });
   }
